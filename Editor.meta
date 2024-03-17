@@ -1,8 +1,11 @@
-fileFormatVersion: 2
-guid: 8fb3706e1b5562349a9e528544821b64
-folderAsset: yes
-DefaultImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+{
+  "fileFormatVersion": 2,
+  "guid": "8fb3706e1b5562349a9e528544821b64",
+  "folderAsset": true,
+  "DefaultImporter": {
+    "externalObjects": {},
+    "userData": "",
+    "assetBundleName": "",
+    "assetBundleVariant": ""
+  }
+}
