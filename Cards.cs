@@ -1,32 +1,30 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KRC
 {
-    [CreateAssetMenu(fileName = "New Card", menuName = "card")]
-    public class Cards:ScriptableObject
+    [CreateAssetMenu(fileName = "New Card", menuName = "Card")]
+    public class Card : ScriptableObject
     {
         public string cardName;
-        public List<CardType> cardType;
-        public int Cost;
-        public int Dmg;
+        public List<CardType> cardTypes;
+        public int cost;
+        public int damage;
         public Sprite cardSprite;
-        public List<DamageType> damageType;
+        public List<DamageType> damageTypes;
 
-
+        [System.Serializable]
         public enum CardType
         {
-            emotional,
-            physical,
+            Emotional,
+            Physical
         }
 
+        [System.Serializable]
         public enum DamageType
         {
-            emotional,
-            physical,
+            Emotional,
+            Physical
         }
-
     }
 }
-
