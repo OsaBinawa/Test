@@ -1,11 +1,16 @@
-fileFormatVersion: 2
-guid: a16e54ac623364042b6b61927c124397
-MonoImporter:
-  externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+{
+  "fileFormatVersion": 2,
+  "guid": "a16e54ac623364042b6b61927c124397",
+  "MonoImporter": {
+    "externalObjects": {},
+    "serializedVersion": 2,
+    "defaultReferences": [],
+    "executionOrder": 0,
+    "icon": {
+      "instanceID": 0
+    },
+    "userData": "",
+    "assetBundleName": "",
+    "assetBundleVariant": ""
+  }
+}
