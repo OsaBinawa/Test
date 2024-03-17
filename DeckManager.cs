@@ -1,11 +1,12 @@
 using KRC;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
-    public List<Cards> AllCards = new List<Cards>();
+    #region Fields
+
+    public List<Card> AllCards = new List<Card>();
 
     private int currentIndex = 0;
     public int startingHandSize = 3;
@@ -14,19 +15,17 @@ public class DeckManager : MonoBehaviour
     private HandManager handManager;
     public int currentHandSize;
 
-    void Start()
+    #endregion
+
+    #region Unity Methods
+
+    private void Start()
     {
-        Cards[] cards = Resources.LoadAll<Cards>("CardData");
-        AllCards.AddRange(cards);
+        LoadCards();
 
-        handManager = FindAnyObjectByType<HandManager>();
-        maxHandSize = handManager.maxHandSize;
+        FindHandManager();
 
-        
-        for (int i = 0; i < startingHandSize; i++)
-        {
-            DrawCard(handManager);
-        }
+        DrawStartingHand();
     }
 
     private void Update()
@@ -37,17 +36,17 @@ public class DeckManager : MonoBehaviour
         }
     }
 
-    public void DrawCard(HandManager handManager)
-    {
-        if (AllCards.Count == 0) return;
+    #endregion
 
-        if (currentHandSize < maxHandSize)
-        {
-            Cards NextCard = AllCards[currentIndex];
-            handManager.AddCardToHand(NextCard);
-            currentIndex = (currentIndex + 1) % AllCards.Count;
-        }
-        
+    #region Private Methods
+
+    private void LoadCards()
+    {
+        Card[] cards = Resources.LoadAll<Card>("CardData");
+        AllCards.AddRange(cards);
     }
 
-}
+    private void FindHandManager()
+    {
+        handManager = FindObjectOfType<HandManager>();
+       
