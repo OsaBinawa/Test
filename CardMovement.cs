@@ -4,59 +4,92 @@ using UnityEngine.UI;
 
 public class CardMovement : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    #region Private Fields
+
     private RectTransform rectTransform;
     private Canvas canvas;
-    private RectTransform canvasRectTranform;
+    private RectTransform canvasRectTransform;
     private Vector3 originalScale;
-    private int currentState = 0;
+    private int currentState;
     private Quaternion originalRotation;
     private Vector3 originalPosition;
+    private Vector2 cardPlayPosition;
+    private Vector3 playPosition;
+    private GameObject glowEffect;
+    private GameObject playArrow;
+    private float lerpFactor;
+    private int cardPlayDivider;
+    private float cardPlayMultiplier;
+    private bool needUpdateCardPlayPosition;
+    private int playPositionYDivider;
+    private float playPositionYMultiplier;
+    private int playPositionXDivider;
+    private float playPositionXMultiplier;
+    private bool needUpdatePlayPosition;
+
+    #endregion
+
+    #region Serialized Fields
 
     [SerializeField] private float selectScale = 1.1f;
-    [SerializeField] private Vector2 cardPlay;
-    [SerializeField] private Vector3 playPosition;
-    [SerializeField] private GameObject glowEffect;
-    [SerializeField] private GameObject playArrow;
-    [SerializeField] private float lerpFactor = 0.1f;
-    [SerializeField] private int cardPlayDivider = 4;
-    [SerializeField] private float cardPlayMultiplier = 1f;
-    [SerializeField] private bool needUpdateCardPlayPosition = false;
-    [SerializeField] private int playPositionYDivider = 2;
-    [SerializeField] private float playPositionYMultiplier = 1f;
-    [SerializeField] private int playPositionXDivider = 4;
-    [SerializeField] private float playPositionXMultiplier = 1f;
-    [SerializeField] private bool needUpdatePlayPosition = false;
+    [SerializeField] private Vector2 cardPlayArea;
+    [SerializeField] private Vector3 playPositionOffset;
+    [SerializeField] private GameObject cardPlayAreaGlowEffect;
+    [SerializeField] private GameObject playArrowObject;
+    [SerializeField] private float lerpSpeed = 10f;
+    [SerializeField] private int cardPlayAreaDivider = 4;
+    [SerializeField] private float cardPlayAreaMultiplier = 1f;
+    [SerializeField] private bool updateCardPlayPositionOnStart = false;
+    [SerializeField] private int playPositionYDividerValue = 2;
+    [SerializeField] private float playPositionYMultiplierValue = 1f;
+    [SerializeField] private int playPositionXDividerValue = 4;
+    [SerializeField] private float playPositionXMultiplierValue = 1f;
+    [SerializeField] private bool updatePlayPositionOnStart = false;
 
-    void Awake()
+    #endregion
+
+    #region MonoBehaviour Callbacks
+
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
 
         if (canvas != null)
         {
-            canvasRectTranform = canvas.GetComponent<RectTransform>();
+            canvasRectTransform = canvas.GetComponent<RectTransform>();
         }
 
         originalScale = rectTransform.localScale;
         originalPosition = rectTransform.localPosition;
         originalRotation = rectTransform.localRotation;
 
-        updateCardPlayPostion();
-        updatePlayPostion();
+        UpdateCardPlayPosition();
+        UpdatePlayPosition();
+
+        if (updateCardPlayPositionOnStart)
+        {
+            UpdateCardPlayPosition();
+        }
+
+        if (updatePlayPositionOnStart)
+        {
+            UpdatePlayPosition();
+        }
     }
 
-    void Update()
+    private void Update()
     {
         if (needUpdateCardPlayPosition)
         {
-            updateCardPlayPostion();
+            UpdateCardPlayPosition();
         }
 
         if (needUpdatePlayPosition)
         {
-            updatePlayPostion();
+            UpdatePlayPosition();
         }
-        
+
         switch (currentState)
         {
             case 1:
@@ -78,6 +111,10 @@ public class CardMovement : MonoBehaviour, IDragHandler, IPointerDownHandler, IP
                 break;
         }
     }
+
+    #endregion
+
+    #region Private Methods
 
     private void TransitionToState0()
     {
@@ -121,11 +158,11 @@ public class CardMovement : MonoBehaviour, IDragHandler, IPointerDownHandler, IP
     {
         if (currentState == 2)
         {
-            if (Input.mousePosition.y > cardPlay.y)
+            if (eventData.position.y > cardPlayArea.y)
             {
                 currentState = 3;
                 playArrow.SetActive(true);
-                rectTransform.localPosition = Vector3.Lerp(rectTransform.position, playPosition, lerpFactor);
+                rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, playPosition, lerpFactor * lerpSpeed * Time.deltaTime);
             }
         }
     }
@@ -140,40 +177,10 @@ public class CardMovement : MonoBehaviour, IDragHandler, IPointerDownHandler, IP
     {
         //Set the card's rotation to zero
         rectTransform.localRotation = Quaternion.identity;
-        rectTransform.position = Vector3.Lerp(rectTransform.position, Input.mousePosition, lerpFactor);
+        rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, eventData.position, lerpFactor * lerpSpeed * Time.deltaTime);
     }
 
     private void HandlePlayState()
     {
         rectTransform.localPosition = playPosition;
-        rectTransform.localRotation = Quaternion.identity;
-
-        if (Input.mousePosition.y < cardPlay.y)
-        {
-            currentState = 2;
-            playArrow.SetActive(false);
-        }
-    }
-
-    private void updateCardPlayPostion()
-    {
-        if (cardPlayDivider != 0 && canvasRectTranform != null)
-        {
-            float segment = cardPlayMultiplier / cardPlayDivider;
-
-            cardPlay.y = canvasRectTranform.rect.height * segment;
-        }
-    }
-
-    private void updatePlayPostion()
-    {
-        if (canvasRectTranform != null && playPositionYDivider != 0 && playPositionXDivider != 0)
-        {
-            float segmentX = playPositionXMultiplier / playPositionXDivider;
-            float segmentY = playPositionYMultiplier / playPositionYDivider;
-
-            playPosition.x = canvasRectTranform.rect.width * segmentX;
-            playPosition.y = canvasRectTranform.rect.height * segmentY;
-        }
-    }
-}
+       
