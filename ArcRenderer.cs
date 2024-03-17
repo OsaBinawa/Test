@@ -6,30 +6,28 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class ArcRenderer : MonoBehaviour
 {
-    public GameObject arrowPregabs;
-    public GameObject dotPrefbs;
+    public GameObject arrowPre Gabs;
+    public GameObject dotPrefab;
     public int poolSize = 50;
     private List<GameObject> dotPool = new List<GameObject>();
     private GameObject arrowInstance;
     public float spacing = 50f;
-    public float arrowAngleAdjustmen = 0;
-    public int dotToSkip = 1;
+    public float arrowAngleAdjustment = 0;
+    public int dotsToSkip = 1;
     private Vector3 arrowDirection;
-   
-    
+
     void Start()
     {
-        arrowInstance = Instantiate(arrowPregabs, transform);
+        arrowInstance = Instantiate(arrowPre Gabs, transform);
         arrowInstance.transform.localPosition = Vector3.zero;
         InitializeDotPool(poolSize);
-
     }
 
     private void InitializeDotPool(int count)
     {
-        for (int i = 0; i < count ; i++)
+        for (int i = 0; i < count; i++)
         {
-            GameObject dot = Instantiate(dotPrefbs, Vector3.zero, Quaternion.identity, transform);
+            GameObject dot = Instantiate(dotPrefab, Vector3.zero, Quaternion.identity, transform);
             dot.SetActive(false);
             dotPool.Add(dot);
         }
@@ -51,9 +49,8 @@ public class ArcRenderer : MonoBehaviour
         arrowInstance.transform.position = position;
         Vector3 direction = arrowDirection - position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        angle += arrowAngleAdjustmen;
+        angle += arrowAngleAdjustment;
         arrowInstance.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
     }
 
     void UpdateArc(Vector3 start, Vector3 mid, Vector3 end)
@@ -63,24 +60,22 @@ public class ArcRenderer : MonoBehaviour
         for (int i = 0; i < numDots && i < dotPool.Count; i++)
         {
             float t = i / (float)numDots;
-            t = Mathf.Clamp(t, 0f, 1f); 
+            t = Mathf.Clamp(t, 0f, 1f);
 
             Vector3 position = QuadraticBezierPoint(start, mid, end, t);
 
-            if (i != numDots - dotToSkip)
+            if (i != numDots - dotsToSkip)
             {
                 dotPool[i].transform.position = position;
                 dotPool[i].SetActive(true);
             }
-            if (i == numDots - (dotToSkip + 1) && i - dotToSkip + 1 >= 0)
+            if (i == numDots - (dotsToSkip + 1) && i - dotsToSkip + 1 >= 0)
             {
                 arrowDirection = dotPool[i].transform.position;
             }
-
         }
 
-        
-        for (int i = numDots - dotToSkip; i < dotPool.Count; i++)
+        for (int i = numDots - dotsToSkip; i < dotPool.Count; i++)
         {
             if (i > 0)
             {
@@ -108,7 +103,4 @@ public class ArcRenderer : MonoBehaviour
         midPoint.y += arcHeight;
         return midPoint;
     }
-    
-
 }
-
